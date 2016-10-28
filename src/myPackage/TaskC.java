@@ -8,52 +8,62 @@ public class TaskC {
         int n = in.nextInt();
         int m = in.nextInt();
         int k = in.nextInt();
+        int sets=0;
         int tot=0;
-        int[][] sets = new int[n][m];
-        DisjointSets DJS = new DisjointSets();
+        int[] socks = new int[n];
+        int[] sock_set = new int[n];
+        int[] ranks = new int[n];
         for(int i=0;i<n;i++) {
-            // Create a set for each sock
-            sets[i] = DJS.createSets(1);
+            socks[i] = in.nextInt()-1;
+            sock_set[i] = -1;
         }
-
         for(int i=0;i<m;i++) {
-            // Each day, unite two sets: unite(a,b)
             int a = in.nextInt()-1;
             int b = in.nextInt()-1;
-            DJS.unite(sets,a,b);
+            if (sock_set[a] == -1) sock_set[a] = a;
+            if (sock_set[b] == -1) sock_set[b] = b;
+            unite(sock_set,ranks,a,b);
+            sets++;
         }
         // Once you have all the sets, for each set calculate how many socks you have to change color
-        for (int i =0;i<Vertex.length;i++){
-            tot+=1;
+        int max[] = new int[sets];
+        int parent;
+        int[][] colours = new int[sets][k];
+        for (int i=0;i<n;i++){
+            parent = find(sock_set, i);
+            if (parent >= 0) {
+                colours[parent][socks[i]]++;
+                tot++;
+                if (colours[parent][socks[i]] > max[parent])
+                    max[parent] = colours[parent][socks[i]];
+            }
         }
+        for (int i=0;i<n;i++)
+            tot -= max[i];
         out.print(tot);
     }
 
-    public class DisjointSets {
-        int[] createSets(int size) {
-            int[] p = new int[size];
-            for (int i = 0; i < size; i++)
-                p[i] = i;
-            return p;
-        }
+    int find(int[] parent, int i)
+    {
+        if (i<0) return -1;
+        if (parent[i] != i)
+            parent[i] = find(parent, parent[i]);
+        return parent[i];
+    }
 
-        int root(int[] p, int x) {
-            return x == p[x] ? x : (p[x] = root(p, p[x]));
+    void unite(int[] parent, int[] rank, int x, int y)
+    {
+        int x_root = find(parent, x);
+        int y_root = find(parent, y);
+        if (x_root != y_root) {
+            if (rank[x_root] < rank[y_root])
+                parent[x_root] = y_root;
+            else if (rank[x_root] > rank[y_root])
+                parent[y_root] = x_root;
+            else {
+                parent[y_root] = x_root;
+                rank[x_root]++;
+            }
         }
-
-        void unite(int[] p, int a, int b) {
-            a = root(p, a);
-            b = root(p, b);
-            if (a != b)
-                p[a] = b;
-        }
-
-        /*// Usage example
-        public static void main(String[] args) {
-            int[] p = createSets(10);
-            System.out.println(false == (root(p, 0) == root(p, 9)));
-            unite(p, 0, 9);
-            System.out.println(true == (root(p, 0) == root(p, 9)));
-        }*/
     }
 }
