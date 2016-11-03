@@ -2,7 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Locale;
 import java.util.Scanner;
+import java.text.NumberFormat;
 
 /**
  * Built using CHelper plug-in
@@ -16,86 +18,64 @@ public class Main {
         OutputStream outputStream = System.out;
         Scanner in = new Scanner(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
-        TaskC solver = new TaskC();
+        TaskB solver = new TaskB();
         solver.solve(1, in, out);
         out.close();
     }
 
-    static class TaskC {
+    static class TaskB {
         public void solve(int testNumber, Scanner in, PrintWriter out) {
-            int n = in.nextInt();
-            int w[] = new int[n];
-
-            boolean e[] = new boolean[n];
-            for (int i = 0; i < n; i++) {
-                w[i] = in.nextInt();
-                e[i] = false;
+            String text = in.next();
+            double val = 0, tot = 0;
+            int dec = 0;
+            int a;
+            char ch;
+            for (int i = text.length() - 1; i >= 0; i--) {
+                ch = text.charAt(i);
+                a = Character.getNumericValue(ch);
+                if (a >= 0 && a <= 9) {
+                    val += a * (Math.pow(10, dec));
+                    dec++;
+                } else if (ch == '.') {
+                    if (dec == 2) {
+                        val /= 100;
+                        dec = 0;
+                    }
+                } else {
+                    dec = 0;
+                    tot += val;
+                    val = 0;
+                }
             }
-            int k = in.nextInt();
-            int ind[] = new int[n - k];
-            char indc[] = new char[n - k];
-            int actual, l = 0, m = 0, x = 0, a = 0, zo = 0;
-
-            for (int i = 0; i < k; i++) {
-                actual = in.nextInt();
-                x = 0;
-                while (x < actual) {
-                    x += w[m];
-                    m++;
-                    if (m == n) break;
-                }
-                if (x != actual) {
-                    out.print("NO");
-                    return;
-                }
-                int z, zl = zo;
-                for (int j = l; j < m; j++) {
-                    if (w[j] == 0) {
-                        zl++;
-                        continue;
-                    }
-                    if (w[j] == actual) {
-                        break;
-                    }
-                    z = -1;
-                    while (j + z >= l && w[j + z] == 0) z--;
-                    if (j + z >= l && w[j + z] > 0 && eat(w, j, z)) {
-                        ind[a] = j - zl + 1;
-                        indc[a] = 'L';
-                        a++;
-                        j = l - 1;
-                        zl = zo;
-                    } else {
-                        z = 1;
-                        while (j + z < m && w[j + z] == 0) z++;
-                        if (j + z < m && w[j + z] > 0 && eat(w, j, z)) {
-                            ind[a] = j - zl + 1;
-                            indc[a] = 'R';
-                            a++;
-                            j = l - 1;
-                            zl = zo;
-                        }
-                    }
-                }
-                if (a - zo != m - l - 1) {
-                    out.print("NO");
-                    return;
-                }
-                zo = m - l - 1;
-                l = m;
+            double dc = tot - (long) tot;
+            out.print(NumberFormat.getNumberInstance(Locale.GERMAN).format((int) tot));
+            if (dc > 0) {
+                for (int i = 1; i < 4; i++)
+                    out.print(Float.toString((float) dc).charAt(i));
             }
-            out.print("YES\n");
-            for (int i = 0; i < n - k; i++)
-                out.print(ind[i] + " " + indc[i] + "\n");
+
+       /*
+        int n=0;
+        int temp;
+        boolean integ = tot == Math.floor(tot);
+        while (tot>1000) {
+            temp = (int)Math.floor(tot);
+            while (temp > 1000) {
+                temp /= 1000;
+                n++;
+            }
+                out.print((int)Math.floor(temp));
+                out.print('.');
+                tot -= temp * (int)Math.pow(1000,n);
+                n--;
         }
-
-        boolean eat(int[] w, int l, int p) {
-            if (w[l] > w[l + p]) {
-                w[l] += w[l + p];
-                w[l + p] = 0;
-                return true;
-            }
-            return false;
+        while (n>0) {
+            out.print("000");
+            out.print('.');
+            n--;
+        }
+        if (integ) out.print((int)tot);
+        else out.printf("%.2f", tot);*/
         }
 
     }
