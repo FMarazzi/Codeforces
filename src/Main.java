@@ -16,39 +16,86 @@ public class Main {
         OutputStream outputStream = System.out;
         Scanner in = new Scanner(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
-        TaskB solver = new TaskB();
+        TaskC solver = new TaskC();
         solver.solve(1, in, out);
         out.close();
     }
 
-    static class TaskB {
+    static class TaskC {
         public void solve(int testNumber, Scanner in, PrintWriter out) {
-            int l = in.nextInt();
-            String all = in.next();
-            int outword = 0, numwords = 0, count = 0;
-            boolean parenth = false;
-            for (int i = 0; i < all.length(); i++) {
-                char ch = all.charAt(i);
-                if (ch == '_') {
-                    if (count > outword && !parenth) outword = count;
-                    if (count > 0 && parenth) numwords++;
-                    count = 0;
-                } else if (ch == '(') {
-                    if (count > outword) outword = count;
-                    count = 0;
-                    parenth = true;
-                } else if (ch == ')') {
-                    if (count > 0) numwords++;
-                    count = 0;
-                    parenth = false;
-                } else {
-                    count++;
-                }
+            int n = in.nextInt();
+            int w[] = new int[n];
+
+            boolean e[] = new boolean[n];
+            for (int i = 0; i < n; i++) {
+                w[i] = in.nextInt();
+                e[i] = false;
             }
-            if (count > outword) outword = count;
-            out.print(outword);
-            out.print(" ");
-            out.print(numwords);
+            int k = in.nextInt();
+            int ind[] = new int[n - k];
+            char indc[] = new char[n - k];
+            int actual, l = 0, m = 0, x = 0, a = 0, zo = 0;
+
+            for (int i = 0; i < k; i++) {
+                actual = in.nextInt();
+                x = 0;
+                while (x < actual) {
+                    x += w[m];
+                    m++;
+                    if (m == n) break;
+                }
+                if (x != actual) {
+                    out.print("NO");
+                    return;
+                }
+                int z, zl = zo;
+                for (int j = l; j < m; j++) {
+                    if (w[j] == 0) {
+                        zl++;
+                        continue;
+                    }
+                    if (w[j] == actual) {
+                        break;
+                    }
+                    z = -1;
+                    while (j + z >= l && w[j + z] == 0) z--;
+                    if (j + z >= l && w[j + z] > 0 && eat(w, j, z)) {
+                        ind[a] = j - zl + 1;
+                        indc[a] = 'L';
+                        a++;
+                        j = l - 1;
+                        zl = zo;
+                    } else {
+                        z = 1;
+                        while (j + z < m && w[j + z] == 0) z++;
+                        if (j + z < m && w[j + z] > 0 && eat(w, j, z)) {
+                            ind[a] = j - zl + 1;
+                            indc[a] = 'R';
+                            a++;
+                            j = l - 1;
+                            zl = zo;
+                        }
+                    }
+                }
+                if (a - zo != m - l - 1) {
+                    out.print("NO");
+                    return;
+                }
+                zo = m - l - 1;
+                l = m;
+            }
+            out.print("YES\n");
+            for (int i = 0; i < n - k; i++)
+                out.print(ind[i] + " " + indc[i] + "\n");
+        }
+
+        boolean eat(int[] w, int l, int p) {
+            if (w[l] > w[l + p]) {
+                w[l] += w[l + p];
+                w[l + p] = 0;
+                return true;
+            }
+            return false;
         }
 
     }
