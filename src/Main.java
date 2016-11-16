@@ -23,43 +23,41 @@ public class Main {
 
     static class TaskC {
         public void solve(int testNumber, Scanner in, PrintWriter out) {
-            int potions = in.nextInt();
+            long potions = in.nextInt();
             int m = in.nextInt();
             int k = in.nextInt();
-            int secs = in.nextInt();
-            int mana = in.nextInt();
-            int fts[] = new int[m];
-            int ftm[] = new int[m];
-            int sts[] = new int[k];
-            int stm[] = new int[k];
-            for (int i = 0; i < m; i++) {
+            long secs = in.nextInt();
+            long mana = in.nextInt();
+            long fts[] = new long[m + 1];
+            long ftm[] = new long[m + 1];
+            long sts[] = new long[k + 1];
+            long stm[] = new long[k + 1];
+            for (int i = 1; i <= m; i++) {
                 fts[i] = in.nextInt();
             }
-            for (int i = 0; i < m; i++) {
+            for (int i = 1; i <= m; i++) {
                 ftm[i] = in.nextInt();
             }
-            for (int i = 0; i < k; i++) {
+            for (int i = 1; i <= k; i++) {
                 sts[i] = in.nextInt();
             }
-            for (int i = 0; i < k; i++) {
+            for (int i = 1; i <= k; i++) {
                 stm[i] = in.nextInt();
             }
-            int l, h, mid = 0;
-            int tot = potions * secs, time, man;
-            for (int i = 0; i < m; i++) {
+            fts[0] = secs;
+            int l, h, mid;
+            long tot = potions * secs, man;
+            for (int i = 0; i <= m; i++) {
                 man = mana - ftm[i];
                 if (man < 0) continue;
-                if (stm[0] < man) {
-                    l = 0;
-                    h = k - 1;
-                    while (l < h) {
-                        mid = (l + h + 1) / 2;
-                        if (stm[mid] <= man) l = mid;
-                        else h = mid - 1;
-                    }
-                    time = (potions - sts[mid]) * fts[i];
-                } else time = potions * fts[i];
-                if (time < tot) tot = time;
+                l = 0;
+                h = k;
+                while (l < h) {
+                    mid = (l + h + 1) / 2;
+                    if (stm[mid] <= man) l = mid;
+                    else h = mid - 1;
+                }
+                tot = Math.min(tot, (potions - sts[l]) * fts[i]);
             }
             out.print(tot);
         }
