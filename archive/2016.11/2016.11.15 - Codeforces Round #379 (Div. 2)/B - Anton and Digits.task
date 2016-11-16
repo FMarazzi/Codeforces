@@ -1,0 +1,33 @@
+20 B - Anton and Digits
+6 SINGLE
+8 STANDARD
+-1
+8 STANDARD
+-1
+2
+0
+8 5 1 3 4
+
+4 800
+
+1
+1
+8 1 1 1 1
+
+4 256
+
+1
+13 src/myPackage
+8 -Xmx256M
+4 Main
+15 myPackage.TaskB
+39 net.egork.chelper.checkers.TokenChecker
+0 
+0
+10 2016.11.15
+30 Codeforces Round #379 (Div. 2)
+1
+17 java.util.Scanner
+19 java.io.PrintWriter
+0
+0

@@ -2,9 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Locale;
 import java.util.Scanner;
-import java.text.NumberFormat;
 
 /**
  * Built using CHelper plug-in
@@ -18,64 +16,52 @@ public class Main {
         OutputStream outputStream = System.out;
         Scanner in = new Scanner(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
-        TaskB solver = new TaskB();
+        TaskC solver = new TaskC();
         solver.solve(1, in, out);
         out.close();
     }
 
-    static class TaskB {
+    static class TaskC {
         public void solve(int testNumber, Scanner in, PrintWriter out) {
-            String text = in.next();
-            double val = 0, tot = 0;
-            int dec = 0;
-            int a;
-            char ch;
-            for (int i = text.length() - 1; i >= 0; i--) {
-                ch = text.charAt(i);
-                a = Character.getNumericValue(ch);
-                if (a >= 0 && a <= 9) {
-                    val += a * (Math.pow(10, dec));
-                    dec++;
-                } else if (ch == '.') {
-                    if (dec == 2) {
-                        val /= 100;
-                        dec = 0;
+            int potions = in.nextInt();
+            int m = in.nextInt();
+            int k = in.nextInt();
+            int secs = in.nextInt();
+            int mana = in.nextInt();
+            int fts[] = new int[m];
+            int ftm[] = new int[m];
+            int sts[] = new int[k];
+            int stm[] = new int[k];
+            for (int i = 0; i < m; i++) {
+                fts[i] = in.nextInt();
+            }
+            for (int i = 0; i < m; i++) {
+                ftm[i] = in.nextInt();
+            }
+            for (int i = 0; i < k; i++) {
+                sts[i] = in.nextInt();
+            }
+            for (int i = 0; i < k; i++) {
+                stm[i] = in.nextInt();
+            }
+            int l, h, mid = 0;
+            int tot = potions * secs, time, man;
+            for (int i = 0; i < m; i++) {
+                man = mana - ftm[i];
+                if (man < 0) continue;
+                if (stm[0] < man) {
+                    l = 0;
+                    h = k - 1;
+                    while (l < h) {
+                        mid = (l + h + 1) / 2;
+                        if (stm[mid] <= man) l = mid;
+                        else h = mid - 1;
                     }
-                } else {
-                    dec = 0;
-                    tot += val;
-                    val = 0;
-                }
+                    time = (potions - sts[mid]) * fts[i];
+                } else time = potions * fts[i];
+                if (time < tot) tot = time;
             }
-            double dc = tot - (long) tot;
-            out.print(NumberFormat.getNumberInstance(Locale.GERMAN).format((int) tot));
-            if (dc > 0) {
-                for (int i = 1; i < 4; i++)
-                    out.print(Float.toString((float) dc).charAt(i));
-            }
-
-       /*
-        int n=0;
-        int temp;
-        boolean integ = tot == Math.floor(tot);
-        while (tot>1000) {
-            temp = (int)Math.floor(tot);
-            while (temp > 1000) {
-                temp /= 1000;
-                n++;
-            }
-                out.print((int)Math.floor(temp));
-                out.print('.');
-                tot -= temp * (int)Math.pow(1000,n);
-                n--;
-        }
-        while (n>0) {
-            out.print("000");
-            out.print('.');
-            n--;
-        }
-        if (integ) out.print((int)tot);
-        else out.printf("%.2f", tot);*/
+            out.print(tot);
         }
 
     }
